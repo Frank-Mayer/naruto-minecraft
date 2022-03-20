@@ -5,6 +5,7 @@
       <configuration>
         <autoDetectTypes>
           <platformType>PAPER</platformType>
+          <platformType>MCP</platformType>
           <platformType>ADVENTURE</platformType>
         </autoDetectTypes>
       </configuration>
@@ -27,6 +28,9 @@
         </compilerArguments>
       </configuration>
     </facet>
+  </component>
+  <component name="McpModuleSettings">
+    <option name="srgType" value="SRG" />
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -73,5 +77,6 @@
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20-RC" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.20-RC" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jetbrains.kotlin:kotlin-test:1.6.20-RC" level="project" />
+    <orderEntry type="library" name="Maven: org.spigotmc:minecraft-server:1.17.1-R0.1-SNAPSHOT" level="project" />
   </component>
 </module>

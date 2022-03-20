@@ -4,6 +4,10 @@ main: io.frankmayer.naruto.Naruto
 api-version: 1.18
 prefix: naruto
 load: STARTUP
-authors: [ tsukinoko_kun ]
+authors: [ 'Frank-Mayer' ]
 description: Ninjutsu for minecraft
 website: https://frank-mayer.io
+commands:
+  naruto:
+    description: Naruto Plugin administration/debugging tools
+    
