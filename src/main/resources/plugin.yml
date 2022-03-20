@@ -2,7 +2,7 @@ name: Naruto
 version: '${project.version}'
 main: io.frankmayer.naruto.Naruto
 api-version: 1.18
-prefix: naruto_
+prefix: naruto
 load: STARTUP
 authors: [ tsukinoko_kun ]
 description: Ninjutsu for minecraft
