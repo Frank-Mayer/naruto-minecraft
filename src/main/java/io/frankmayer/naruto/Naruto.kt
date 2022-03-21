@@ -9,6 +9,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -37,11 +38,24 @@ class Naruto() : JavaPlugin(), Listener {
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         val attacker = event.damager as? Player ?: return
         val weapon = attacker.inventory.itemInMainHand
+        val target = event.entity as? LivingEntity ?: return
 
         val jutsu = itemFactory.getJutsu(weapon)
 
         if (jutsu != null) {
-            onJutsu(attacker, jutsu)
+            jutsu.onHit?.invoke(attacker, target)
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        val player = event.player
+        val item = player.inventory.itemInMainHand
+        val jutsu = itemFactory.getJutsu(item)
+
+        if (jutsu != null) {
+            jutsu.onUse?.invoke(player)
             event.isCancelled = true
         }
     }
@@ -61,14 +75,5 @@ class Naruto() : JavaPlugin(), Listener {
             event.player.sendMessage("Jutsu can't be dropped!")
             event.isCancelled = true
         }
-    }
-
-    private fun onJutsu(attacker: Player, jutsu: Jutsu): Boolean {
-        attacker.sendMessage("${jutsu.displayName}!")
-        val target = attacker.getTargetEntity(jutsu.range) as? LivingEntity ?: return false
-        target.sendMessage("${jutsu.displayName}!")
-        jutsu.task(attacker, target)
-
-        return true
     }
 }

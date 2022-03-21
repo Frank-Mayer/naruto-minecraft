@@ -12,7 +12,7 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         sender.sendMessage(command.name+ " "+args.joinToString(" "))
         if (!sender.isOp || !command.name.equals("naruto", true)) {
-            sender.sendMessage("Du bist kein Ninja!")
+            sender.sendMessage("You're not a Ninja!")
             return false
         }
 
@@ -25,6 +25,10 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                     when (args[1]) {
                         "rasengan" -> {
                             inventory.addItem(itemFactory.createRasengan())
+                            return true
+                        }
+                        "shinratensei" -> {
+                            inventory.addItem(itemFactory.createShinraTensei())
                             return true
                         }
                     }
@@ -46,7 +50,7 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
             1 -> return mutableListOf("give")
             2 ->  when (args[0]) {
                 "give" -> {
-                    return mutableListOf("rasengan")
+                    return mutableListOf("rasengan", "shinratensei")
                 }
             }
         }
