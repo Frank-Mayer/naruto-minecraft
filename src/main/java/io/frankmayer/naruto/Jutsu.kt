@@ -4,20 +4,19 @@ import org.bukkit.Bukkit.getScheduler
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
-import org.bukkit.entity.FallingBlock
-import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.Player
-import org.bukkit.entity.Projectile
+import org.bukkit.entity.*
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 enum class Jutsu(
     val displayName: String,
     val onHit: ((attacker: Player, target: LivingEntity) -> Unit)?,
-    val onUse: ((player: Player) -> Unit)?
+    val onUse: ((player: Player) -> Boolean)?,
+    val onDefend: ((defender: Player, attacker: Entity) -> Unit)?,
 ) {
     RASENGAN("Rasengan", { attacker, target ->
-        target.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 4, 10, true, false))
+        target.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
         target.world.spawnParticle(Particle.EXPLOSION_LARGE, target.eyeLocation, 5)
         target.velocity = target.velocity.add(attacker.location.direction.multiply(5.0))
         if (Naruto.instance != null) {
@@ -30,7 +29,7 @@ enum class Jutsu(
                 }, 7L
             )
         }
-    }, null),
+    }, null, null),
     SHINRATENSEI("Shinra Tensei", null, { attacker ->
         val attackerLocationVector = attacker.location.toVector()
         val forceDistance = 32.0
@@ -82,5 +81,68 @@ enum class Jutsu(
                 }
             }
         }
-    }),
+
+        true
+    }, null),
+    AMENOTEJIKARA("Amenotejikara", null, {
+        user ->
+        val range = 10.0
+
+        var target: Entity? = null
+        val possibleTargets = user.world.getNearbyEntities(user.location, range, range, range)
+
+        for (possibleTarget in possibleTargets) {
+            if (possibleTarget is Mob) {
+                target = possibleTarget
+                break
+            }
+        }
+
+        if (target == null) {
+            for (possibleTarget in possibleTargets) {
+                if (possibleTarget is LivingEntity && possibleTarget.uniqueId != user.uniqueId) {
+                    target = possibleTarget
+                    break
+                }
+            }
+
+            if (target == null) {
+                for (possibleTarget in possibleTargets) {
+                    if (possibleTarget.uniqueId != user.uniqueId) {
+                        target = possibleTarget
+                        break
+                    }
+                }
+            }
+        }
+
+        if (target == null) {
+            false
+        } else {
+            val particleOptions = Particle.DustOptions(Color.PURPLE, 5.0f)
+            user.world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
+            user.world.spawnParticle(Particle.REDSTONE, target!!.location, 10, particleOptions)
+            if (target is LivingEntity) {
+                val livingTarget = target as LivingEntity
+                livingTarget.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
+            }
+            user.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
+
+            val targetLocation = target!!.location.clone()
+            val userLocation = user.location.clone()
+
+            val targetVelocity = target!!.velocity.clone()
+            val userVelocity = user.velocity.clone()
+
+            target!!.teleport(userLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            target!!.velocity = userVelocity
+
+            user.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            user.velocity = targetVelocity
+
+            true
+        }
+    }, {
+        defender, _ -> Jutsu.AMENOTEJIKARA.onUse!!.invoke(defender)
+    })
 }

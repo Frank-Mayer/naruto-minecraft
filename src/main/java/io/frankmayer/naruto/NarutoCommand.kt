@@ -31,6 +31,10 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                             inventory.addItem(itemFactory.createShinraTensei())
                             return true
                         }
+                        "amenotejikara" -> {
+                            inventory.addItem(itemFactory.createAmenotejikara())
+                            return true
+                        }
                     }
                 }
             }
@@ -50,7 +54,7 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
             1 -> return mutableListOf("give")
             2 ->  when (args[0]) {
                 "give" -> {
-                    return mutableListOf("rasengan", "shinratensei")
+                    return mutableListOf("rasengan", "shinratensei", "amenotejikara")
                 }
             }
         }

@@ -45,6 +45,11 @@ class Naruto() : JavaPlugin(), Listener {
         if (jutsu != null) {
             jutsu.onHit?.invoke(attacker, target)
             event.isCancelled = true
+        } else {
+            val defenceJutsu = itemFactory.getJutsu(weapon)?: return
+            val targetPlayer = target as? Player ?: return
+            defenceJutsu.onDefend?.invoke(targetPlayer, attacker)
+            event.isCancelled = true
         }
     }
 

@@ -29,6 +29,14 @@ class ItemFactory(plugin: Plugin) {
         Component.text("Kekkei Genkai: Rin'negan")
     )
 
+    private val amenotejikaraTitle = Component.text(Jutsu.AMENOTEJIKARA.displayName)
+    private val amenotejikaraLore = listOf(
+        Component.text("Classification: Dōjutsu"),
+        Component.text("Class: Supplementary"),
+        Component.text("Range: Short to Mid range"),
+        Component.text("Kekkei Genkai: Rin'negan")
+    )
+
     internal fun createRasengan(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
@@ -55,6 +63,18 @@ class ItemFactory(plugin: Plugin) {
         meta.persistentDataContainer.set(ninjutsuKey, PersistentDataType.STRING, Jutsu.SHINRATENSEI.displayName)
         meta.displayName(shinraTenseiTitle)
         meta.lore(shinraTenseiLore)
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
+
+        stack.itemMeta = meta
+        return stack
+    }
+
+    internal fun createAmenotejikara(): ItemStack {
+        val stack = ItemStack(Material.PLAYER_HEAD)
+        val meta = stack.itemMeta
+        meta.persistentDataContainer.set(ninjutsuKey, PersistentDataType.STRING, Jutsu.AMENOTEJIKARA.displayName)
+        meta.displayName(amenotejikaraTitle)
+        meta.lore(amenotejikaraLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
 
         stack.itemMeta = meta
