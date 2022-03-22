@@ -1,6 +1,9 @@
 package io.frankmayer.naruto
 
 import org.bukkit.Bukkit.getScheduler
+import org.bukkit.Color
+import org.bukkit.Material
+import org.bukkit.Particle
 import org.bukkit.entity.FallingBlock
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -15,6 +18,7 @@ enum class Jutsu(
 ) {
     RASENGAN("Rasengan", { attacker, target ->
         target.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 4, 10, true, false))
+        target.world.spawnParticle(Particle.EXPLOSION_LARGE, target.eyeLocation, 5)
         target.velocity = target.velocity.add(attacker.location.direction.multiply(5.0))
         if (Naruto.instance != null) {
             getScheduler().scheduleSyncDelayedTask(
@@ -29,8 +33,10 @@ enum class Jutsu(
     }, null),
     SHINRATENSEI("Shinra Tensei", null, { attacker ->
         val attackerLocationVector = attacker.location.toVector()
-        val forceDistance = 16.0
+        val forceDistance = 32.0
         val explosionRadius = (forceDistance / 4.0).toInt()
+
+        attacker.world.spawnParticle(Particle.REDSTONE, attacker.eyeLocation, 10, Particle.DustOptions(Color.PURPLE, 5.0f))
 
         attacker.location.getNearbyEntities(forceDistance, forceDistance, forceDistance).forEach {
             if (it.uniqueId == attacker.uniqueId) {
@@ -55,8 +61,24 @@ enum class Jutsu(
                     val block = blockLocation.block
                     if (block.type.isSolid) {
                         block.breakNaturally()
-                        blockLocation.world.spawnParticle(org.bukkit.Particle.EXPLOSION_NORMAL, blockLocation, 1)
+                        blockLocation.world.spawnParticle(Particle.EXPLOSION_NORMAL, blockLocation, 1)
+                    } else if (block.isLiquid) {
+                        block.type = Material.AIR
                     }
+                }
+            }
+        }
+
+        for (x in -explosionRadius..explosionRadius) {
+            for (z in -explosionRadius..explosionRadius) {
+                val blockLocation = attacker.location.add(x.toDouble(), -1.0, z.toDouble())
+                val block = blockLocation.block
+                if (block.type == Material.GRASS_BLOCK || block.type == Material.DIRT) {
+                    block.type = Material.COARSE_DIRT
+                } else if (block.type == Material.STONE) {
+                    block.type = Material.GRAVEL
+                } else if (block.type == Material.SANDSTONE || block.type == Material.CHISELED_RED_SANDSTONE || block.type == Material.CHISELED_SANDSTONE || block.type == Material.SMOOTH_RED_SANDSTONE || block.type == Material.SMOOTH_SANDSTONE) {
+                    block.type = Material.SAND
                 }
             }
         }
