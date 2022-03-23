@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 
-class Naruto() : JavaPlugin(), Listener {
+class Naruto : JavaPlugin(), Listener {
     companion object {
         var instance: Naruto? = null
     }
@@ -36,21 +36,22 @@ class Naruto() : JavaPlugin(), Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
-        val attacker = event.damager as? Player ?: return
-        val weapon = attacker.inventory.itemInMainHand
-        val target = event.entity as? LivingEntity ?: return
-
-        val jutsu = itemFactory.getJutsu(weapon)
-
-        if (jutsu != null) {
-            jutsu.onHit?.invoke(attacker, target)
-            event.isCancelled = true
-        } else {
-            val defenceJutsu = itemFactory.getJutsu(weapon)?: return
-            val targetPlayer = target as? Player ?: return
-            defenceJutsu.onDefend?.invoke(targetPlayer, attacker)
-            event.isCancelled = true
+        if (event.damager is Player) {
+            val attacker = event.damager as? Player ?: return
+            val weapon = attacker.inventory.itemInMainHand
+            val target = event.entity as? LivingEntity ?: return
+            val jutsu = itemFactory.getJutsu(weapon)
+            if (jutsu != null) {
+                jutsu.onHit?.invoke(attacker, target)
+                event.isCancelled = true
+                return
+            }
         }
+
+        val defender = event.entity as? Player ?: return
+        val defenderJutsu = itemFactory.getJutsu(defender.inventory.itemInMainHand) ?: return
+        defenderJutsu.onDefend?.invoke(defender, event)
+        event.isCancelled = true
     }
 
     @EventHandler(priority = EventPriority.HIGH)

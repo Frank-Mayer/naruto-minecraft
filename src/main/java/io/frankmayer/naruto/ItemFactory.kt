@@ -37,6 +37,16 @@ class ItemFactory(plugin: Plugin) {
         Component.text("Kekkei Genkai: Rin'negan")
     )
 
+    private val kirinTitle = Component.text(Jutsu.KIRIN.displayName)
+    private val kirinLore = listOf(
+        Component.text("Classification: Ninjutsu"),
+        Component.text("Element: Raiton"),
+        Component.text("Rank: S-rank"),
+        Component.text("Class: Offensive"),
+        Component.text("Range: Long range"),
+        Component.text("Creator: Uchiha Sasuke")
+    )
+
     internal fun createRasengan(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
@@ -64,6 +74,7 @@ class ItemFactory(plugin: Plugin) {
         meta.displayName(shinraTenseiTitle)
         meta.lore(shinraTenseiLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
+        meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
 
         stack.itemMeta = meta
         return stack
@@ -76,6 +87,20 @@ class ItemFactory(plugin: Plugin) {
         meta.displayName(amenotejikaraTitle)
         meta.lore(amenotejikaraLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
+        meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
+
+        stack.itemMeta = meta
+        return stack
+    }
+
+    internal fun createKirin(): ItemStack {
+        val stack = ItemStack(Material.PLAYER_HEAD)
+        val meta = stack.itemMeta
+        meta.persistentDataContainer.set(ninjutsuKey, PersistentDataType.STRING, Jutsu.KIRIN.displayName)
+        meta.displayName(kirinTitle)
+        meta.lore(kirinLore)
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
+        meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
 
         stack.itemMeta = meta
         return stack

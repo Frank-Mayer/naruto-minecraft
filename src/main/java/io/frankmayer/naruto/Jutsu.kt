@@ -1,19 +1,20 @@
 package io.frankmayer.naruto
 
+import com.destroystokyo.paper.block.TargetBlockInfo
+import org.bukkit.*
 import org.bukkit.Bukkit.getScheduler
-import org.bukkit.Color
-import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.entity.*
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import kotlin.math.floor
 
 enum class Jutsu(
     val displayName: String,
     val onHit: ((attacker: Player, target: LivingEntity) -> Unit)?,
-    val onUse: ((player: Player) -> Boolean)?,
-    val onDefend: ((defender: Player, attacker: Entity) -> Unit)?,
+    val onUse: ((player: Player) -> Unit)?,
+    val onDefend: ((defender: Player, event: EntityDamageByEntityEvent) -> Unit)?,
 ) {
     RASENGAN("Rasengan", { attacker, target ->
         target.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
@@ -35,7 +36,9 @@ enum class Jutsu(
         val forceDistance = 32.0
         val explosionRadius = (forceDistance / 4.0).toInt()
 
-        attacker.world.spawnParticle(Particle.REDSTONE, attacker.eyeLocation, 10, Particle.DustOptions(Color.PURPLE, 5.0f))
+        attacker.world.spawnParticle(
+            Particle.REDSTONE, attacker.eyeLocation, 10, Particle.DustOptions(Color.PURPLE, 5.0f)
+        )
 
         attacker.location.getNearbyEntities(forceDistance, forceDistance, forceDistance).forEach {
             if (it.uniqueId == attacker.uniqueId) {
@@ -81,68 +84,102 @@ enum class Jutsu(
                 }
             }
         }
-
-        true
     }, null),
-    AMENOTEJIKARA("Amenotejikara", null, {
-        user ->
-        val range = 10.0
+    AMENOTEJIKARA("Amenotejikara", null, { user ->
+        val range = Math.random() * 16.0 + 16.0
 
-        var target: Entity? = null
-        val possibleTargets = user.world.getNearbyEntities(user.location, range, range, range)
+        val possibleTargets: List<Entity> = user.world.getNearbyEntities(user.location, range, range, range)
+            .filter { it.uniqueId != user.uniqueId }
+            .sortedByDescending { it.location.distance(user.location) }
 
-        for (possibleTarget in possibleTargets) {
-            if (possibleTarget is Mob) {
-                target = possibleTarget
-                break
-            }
-        }
+        if (possibleTargets.isNotEmpty()) {
+            val target = possibleTargets[floor(Math.random() * possibleTargets.size).toInt()]
 
-        if (target == null) {
-            for (possibleTarget in possibleTargets) {
-                if (possibleTarget is LivingEntity && possibleTarget.uniqueId != user.uniqueId) {
-                    target = possibleTarget
-                    break
-                }
-            }
-
-            if (target == null) {
-                for (possibleTarget in possibleTargets) {
-                    if (possibleTarget.uniqueId != user.uniqueId) {
-                        target = possibleTarget
-                        break
-                    }
-                }
-            }
-        }
-
-        if (target == null) {
-            false
-        } else {
             val particleOptions = Particle.DustOptions(Color.PURPLE, 5.0f)
             user.world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
-            user.world.spawnParticle(Particle.REDSTONE, target!!.location, 10, particleOptions)
+            user.world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
             if (target is LivingEntity) {
-                val livingTarget = target as LivingEntity
-                livingTarget.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
+                val livingTarget = target
+                livingTarget.addPotionEffect(
+                    PotionEffect(
+                        PotionEffectType.CONFUSION, 8, 10, true, false
+                    )
+                )
             }
-            user.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
+            user.addPotionEffect(
+                PotionEffect(
+                    PotionEffectType.CONFUSION, 8, 10, true, false
+                )
+            )
 
-            val targetLocation = target!!.location.clone()
+            val targetLocation = target.location.clone()
             val userLocation = user.location.clone()
 
-            val targetVelocity = target!!.velocity.clone()
+            val targetVelocity = target.velocity.clone()
             val userVelocity = user.velocity.clone()
 
-            target!!.teleport(userLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
-            target!!.velocity = userVelocity
+            target.teleport(userLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            target.velocity = userVelocity
 
             user.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
             user.velocity = targetVelocity
-
-            true
         }
-    }, {
-        defender, _ -> Jutsu.AMENOTEJIKARA.onUse!!.invoke(defender)
-    })
+    }, { user, event ->
+        val range = Math.random() * 16.0 + 16.0
+
+        val possibleTargets: List<Entity> = user.world.getNearbyEntities(user.location, range, range, range)
+            .filter { it.uniqueId != user.uniqueId && it.uniqueId != event.damager.uniqueId }
+            .sortedByDescending { it.location.distance(user.location) }
+
+        if (possibleTargets.isNotEmpty()) {
+            val target = possibleTargets[floor(Math.random() * possibleTargets.size).toInt()]
+
+            val particleOptions = Particle.DustOptions(Color.PURPLE, 5.0f)
+            user.world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
+            user.world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
+            if (target is LivingEntity) {
+                val livingTarget = target
+                livingTarget.addPotionEffect(
+                    PotionEffect(
+                        PotionEffectType.CONFUSION, 8, 10, true, false
+                    )
+                )
+            }
+            user.addPotionEffect(
+                PotionEffect(
+                    PotionEffectType.CONFUSION, 8, 10, true, false
+                )
+            )
+
+            val targetLocation = target.location.clone()
+            val userLocation = user.location.clone()
+
+            val targetVelocity = target.velocity.clone()
+            val userVelocity = user.velocity.clone()
+
+            target.teleport(userLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            target.velocity = userVelocity
+
+            user.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            user.velocity = targetVelocity
+        }
+    }),
+    KIRIN("Kirin", null, { user ->
+        val world = user.world
+        val targetLocation = user.getTargetEntity(16, false)?.location ?: user.getTargetBlock(
+            16,
+            TargetBlockInfo.FluidMode.NEVER
+        )?.location
+        
+        if (targetLocation != null) {
+            world.playSound(targetLocation, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.PLAYERS, 2.0f, 1.2f)
+            val entity = world.spawnEntity(targetLocation, EntityType.LIGHTNING) as LightningStrike
+            entity.isSilent = true
+            entity.flashCount = 4
+
+            world.playSound(
+                targetLocation, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 2.0f, 1.2f
+            )
+        }
+    }, null)
 }
