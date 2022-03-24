@@ -62,6 +62,15 @@ class ItemFactory {
         Component.text("Space–Time Ninjutsu: " + Jutsu.HIRAISHINNOJUTSU.displayName + ".")
     )
 
+    private val OrukaTitle = Component.text(Jutsu.ORUKA.displayName)
+    private val OrukaLore = listOf(
+        Component.text("Classification: Ninjutsu"),
+        Component.text("Element: Suiton"),
+        Component.text("Class: Offensive"),
+        Component.text("Range: Short range"),
+        Component.text("Creator: Uzumaki Boruto")
+    )
+
     internal fun createRasengan(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
@@ -144,6 +153,19 @@ class ItemFactory {
         )
         meta.displayName(HiraishinTitle)
         meta.lore(HiraishinLore)
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
+        meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
+
+        stack.itemMeta = meta
+        return stack
+    }
+
+    internal fun createOruka(): ItemStack {
+        val stack = ItemStack(Material.PLAYER_HEAD)
+        val meta = stack.itemMeta
+        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.ORUKA.displayName)
+        meta.displayName(OrukaTitle)
+        meta.lore(OrukaLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
         meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
 

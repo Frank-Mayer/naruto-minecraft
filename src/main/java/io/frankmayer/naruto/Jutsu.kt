@@ -256,5 +256,26 @@ enum class Jutsu(
                 hiraishinArrow.remove()
             }
         }
+    }, null),
+    ORUKA("Oruka", null, { player, _ ->
+        val block1 = player.location.block
+        val block2 = player.location.add(0.0, 1.0, 0.0).block
+
+        if (block1.type == Material.AIR || block1.type == Material.CAVE_AIR || block1.type == Material.VOID_AIR) {
+            block1.type = Material.WATER
+
+            getScheduler().scheduleSyncDelayedTask(Naruto.instance!!, {
+                block1.type = Material.AIR
+            }, 40L)
+        }
+
+        if (block2.type == Material.AIR || block2.type == Material.CAVE_AIR || block2.type == Material.VOID_AIR) {
+            block2.type = Material.WATER
+
+            getScheduler().scheduleSyncDelayedTask(Naruto.instance!!, {
+                block2.type = Material.AIR
+            }, 40L)
+        }
+
     }, null)
 }
