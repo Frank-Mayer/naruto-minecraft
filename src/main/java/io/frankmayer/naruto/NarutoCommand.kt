@@ -10,7 +10,7 @@ import org.bukkit.inventory.PlayerInventory
 class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, TabCompleter {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        sender.sendMessage(command.name+ " "+args.joinToString(" "))
+        sender.sendMessage(command.name + " " + args.joinToString(" "))
         if (!sender.isOp || !command.name.equals("naruto", true)) {
             sender.sendMessage("You're not a Ninja!")
             return false
@@ -19,25 +19,55 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
         val player = sender as Player
         val inventory: PlayerInventory = player.inventory
 
-        if (args.size == 2) {
-            when (args[0]) {
-                "give" -> {
-                    when (args[1]) {
-                        "rasengan" -> {
-                            inventory.addItem(itemFactory.createRasengan())
-                            return true
+        when (args.size) {
+            2 -> {
+                when (args[0]) {
+                    "give" -> {
+                        when (args[1]) {
+                            "rasengan" -> {
+                                inventory.addItem(itemFactory.createRasengan())
+                                return true
+                            }
+                            "shinratensei" -> {
+                                inventory.addItem(itemFactory.createShinraTensei())
+                                return true
+                            }
+                            "amenotejikara" -> {
+                                inventory.addItem(itemFactory.createAmenotejikara())
+                                return true
+                            }
+                            "kirin" -> {
+                                inventory.addItem(itemFactory.createKirin())
+                                return true
+                            }
+                            "hiraishin_arrow" -> {
+                                inventory.addItem(itemFactory.createHiraishinArrow())
+                                return true
+                            }
+                            "hiraishinnojutsu" -> {
+                                inventory.addItem(itemFactory.createHiraishin())
+                                return true
+                            }
                         }
-                        "shinratensei" -> {
-                            inventory.addItem(itemFactory.createShinraTensei())
-                            return true
-                        }
-                        "amenotejikara" -> {
-                            inventory.addItem(itemFactory.createAmenotejikara())
-                            return true
-                        }
-                        "kirin" -> {
-                            inventory.addItem(itemFactory.createKirin())
-                            return true
+                    }
+                }
+            }
+            3 -> {
+                when (args[0]) {
+                    "give" -> {
+                        when (args[1]) {
+                            "hiraishin_arrow" -> {
+                                return try {
+                                    val count = args[2].toInt()
+                                    val stack = itemFactory.createHiraishinArrow()
+                                    stack.amount = count
+                                    inventory.addItem(stack)
+                                    true
+                                } catch (e: NumberFormatException) {
+                                    sender.sendMessage("Invalid count: ${args[2]}")
+                                    false
+                                }
+                            }
                         }
                     }
                 }
@@ -56,9 +86,27 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
 
         when (args.count()) {
             1 -> return mutableListOf("give")
-            2 ->  when (args[0]) {
+            2 -> when (args[0]) {
                 "give" -> {
-                    return mutableListOf("rasengan", "shinratensei", "amenotejikara", "kirin")
+                    return mutableListOf(
+                        "rasengan",
+                        "shinratensei",
+                        "amenotejikara",
+                        "kirin",
+                        "hiraishin_arrow",
+                        "hiraishinnojutsu"
+                    )
+                }
+            }
+            3 -> {
+                when (args[0]) {
+                    "give" -> {
+                        when (args[1]) {
+                            "hiraishin_arrow" -> {
+                                return mutableListOf("1", "5", "10", "16")
+                            }
+                        }
+                    }
                 }
             }
         }

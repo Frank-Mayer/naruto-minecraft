@@ -6,6 +6,7 @@ import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.*
+import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.potion.PotionEffect
@@ -15,7 +16,7 @@ import kotlin.math.floor
 enum class Jutsu(
     val displayName: String,
     val onHit: ((attacker: Player, target: LivingEntity) -> Unit)?,
-    val onUse: ((player: Player) -> Unit)?,
+    val onUse: ((player: Player, action: Action) -> Unit)?,
     val onDefend: ((defender: Player, event: EntityDamageByEntityEvent) -> Unit)?,
 ) {
     RASENGAN("Rasengan", { attacker, target ->
@@ -33,7 +34,7 @@ enum class Jutsu(
             )
         }
     }, null, null),
-    SHINRATENSEI("Shinra Tensei", null, { attacker ->
+    SHINRATENSEI("Shinra Tensei", null, { attacker, _ ->
         val attackerLocationVector = attacker.location.toVector()
         val forceDistance = 32.0
         val explosionRadius = (forceDistance / 4.0).toInt()
@@ -77,17 +78,22 @@ enum class Jutsu(
             for (z in -explosionRadius..explosionRadius) {
                 val blockLocation = attacker.location.add(x.toDouble(), -1.0, z.toDouble())
                 val block = blockLocation.block
-                if (block.type == Material.GRASS_BLOCK || block.type == Material.DIRT) {
-                    block.type = Material.COARSE_DIRT
-                } else if (block.type == Material.STONE) {
-                    block.type = Material.GRAVEL
-                } else if (block.type == Material.SANDSTONE || block.type == Material.CHISELED_RED_SANDSTONE || block.type == Material.CHISELED_SANDSTONE || block.type == Material.SMOOTH_RED_SANDSTONE || block.type == Material.SMOOTH_SANDSTONE) {
-                    block.type = Material.SAND
+                when (block.type) {
+                    Material.GRASS_BLOCK, Material.DIRT -> {
+                        block.type = Material.COARSE_DIRT
+                    }
+                    Material.STONE -> {
+                        block.type = Material.GRAVEL
+                    }
+                    Material.SANDSTONE, Material.CHISELED_RED_SANDSTONE, Material.CHISELED_SANDSTONE, Material.SMOOTH_RED_SANDSTONE, Material.SMOOTH_SANDSTONE -> {
+                        block.type = Material.SAND
+                    }
+                    else -> {}
                 }
             }
         }
     }, null),
-    AMENOTEJIKARA("Amenotejikara", null, { user ->
+    AMENOTEJIKARA("Amenotejikara", null, { user, _ ->
         val range = Math.random() * 16.0 + 16.0
 
         val possibleTargets: List<Entity> =
@@ -101,8 +107,7 @@ enum class Jutsu(
             user.world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
             user.world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
             if (target is LivingEntity) {
-                val livingTarget = target
-                livingTarget.addPotionEffect(
+                target.addPotionEffect(
                     PotionEffect(
                         PotionEffectType.CONFUSION, 8, 10, true, false
                     )
@@ -127,7 +132,7 @@ enum class Jutsu(
             user.velocity = targetVelocity
         }
     }, { user, event ->
-        val range = Math.random() * 16.0 + 16.0
+        val range = 32.0
 
         val possibleTargets: List<Entity> = user.world.getNearbyEntities(user.location, range, range, range)
             .filter { it.uniqueId != user.uniqueId && it.uniqueId != event.damager.uniqueId }
@@ -140,9 +145,8 @@ enum class Jutsu(
             user.world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
             user.world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
             if (target is LivingEntity) {
-                val livingTarget = target
-                livingTarget.damage(event.damage, event.damager)
-                livingTarget.addPotionEffect(
+                target.damage(event.damage, event.damager)
+                target.addPotionEffect(
                     PotionEffect(
                         PotionEffectType.CONFUSION, 10, 10, true, false
                     )
@@ -167,10 +171,10 @@ enum class Jutsu(
             user.velocity = targetVelocity
         }
     }),
-    KIRIN("Kirin", null, { user ->
+    KIRIN("Kirin", null, { user, _ ->
         val world = user.world
-        val targetLocation = user.getTargetEntity(16, false)?.location ?: user.getTargetBlock(
-            16, TargetBlockInfo.FluidMode.NEVER
+        val targetLocation = user.getTargetEntity(32, false)?.location ?: user.getTargetBlock(
+            32, TargetBlockInfo.FluidMode.NEVER
         )?.location
 
         if (targetLocation != null) {
@@ -183,6 +187,60 @@ enum class Jutsu(
                     entity.setCausingPlayer(user)
                     entity.flashCount = 3
                 }, i + Math.random().toLong())
+            }
+        }
+    }, null),
+    HIRAISHINNOJUTSU("Hiraishin no Jutsu", { attacker, target ->
+        val hiraishinKeyString = Naruto.hiraishinKey!!.toString()
+        val world = attacker.world
+        val range = 256.0
+        val userIdString = attacker.uniqueId.toString()
+        val hiraishinArrow = world.getNearbyEntitiesByType(Arrow::class.java, attacker.location, range, range, range)
+            .firstOrNull { entity ->
+                entity.getMetadata(hiraishinKeyString).map { meta ->
+                    meta.asString()
+                }.contains(userIdString)
+            }
+
+        if (hiraishinArrow != null) {
+            val velocity = hiraishinArrow.velocity.clone()
+            val particleOptions = Particle.DustOptions(Color.YELLOW, 5.0f)
+            world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
+            world.spawnParticle(Particle.REDSTONE, hiraishinArrow.location, 10, particleOptions)
+            target.teleport(hiraishinArrow, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            if (hiraishinArrow.isOnGround || hiraishinArrow.isInBlock) {
+                target.velocity = velocity
+            } else {
+                target.velocity = velocity.multiply(3)
+            }
+            hiraishinArrow.remove()
+        }
+    }, { user, action ->
+        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+            val hiraishinKeyString = Naruto.hiraishinKey!!.toString()
+            val range = 256.0
+            val userIdString = user.uniqueId.toString()
+            val world = user.world
+            val hiraishinArrow = world.getNearbyEntitiesByType(Arrow::class.java, user.location, range, range, range)
+                .firstOrNull { entity ->
+                    entity.getMetadata(hiraishinKeyString).map { meta ->
+                        meta.asString()
+                    }.contains(userIdString)
+                }
+
+            if (hiraishinArrow != null) {
+                val velocity = hiraishinArrow.velocity.clone()
+                val particleOptions = Particle.DustOptions(Color.YELLOW, 5.0f)
+                world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
+                world.spawnParticle(Particle.REDSTONE, hiraishinArrow.location, 10, particleOptions)
+                user.teleport(hiraishinArrow, PlayerTeleportEvent.TeleportCause.PLUGIN)
+                if (hiraishinArrow.isOnGround || hiraishinArrow.isInBlock) {
+                    user.velocity = velocity
+                } else {
+                    user.velocity = velocity.multiply(3)
+                }
+                user.inventory.addItem(Naruto.itemFactory!!.createHiraishinArrow())
+                hiraishinArrow.remove()
             }
         }
     }, null)
