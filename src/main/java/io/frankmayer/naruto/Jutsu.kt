@@ -1,8 +1,10 @@
 package io.frankmayer.naruto
 
 import com.destroystokyo.paper.block.TargetBlockInfo
-import org.bukkit.*
 import org.bukkit.Bukkit.getScheduler
+import org.bukkit.Color
+import org.bukkit.Material
+import org.bukkit.Particle
 import org.bukkit.entity.*
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerTeleportEvent
@@ -88,9 +90,9 @@ enum class Jutsu(
     AMENOTEJIKARA("Amenotejikara", null, { user ->
         val range = Math.random() * 16.0 + 16.0
 
-        val possibleTargets: List<Entity> = user.world.getNearbyEntities(user.location, range, range, range)
-            .filter { it.uniqueId != user.uniqueId }
-            .sortedByDescending { it.location.distance(user.location) }
+        val possibleTargets: List<Entity> =
+            user.world.getNearbyEntities(user.location, range, range, range).filter { it.uniqueId != user.uniqueId }
+                .sortedByDescending { it.location.distance(user.location) }
 
         if (possibleTargets.isNotEmpty()) {
             val target = possibleTargets[floor(Math.random() * possibleTargets.size).toInt()]
@@ -139,15 +141,16 @@ enum class Jutsu(
             user.world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
             if (target is LivingEntity) {
                 val livingTarget = target
+                livingTarget.damage(event.damage, event.damager)
                 livingTarget.addPotionEffect(
                     PotionEffect(
-                        PotionEffectType.CONFUSION, 8, 10, true, false
+                        PotionEffectType.CONFUSION, 10, 10, true, false
                     )
                 )
             }
             user.addPotionEffect(
                 PotionEffect(
-                    PotionEffectType.CONFUSION, 8, 10, true, false
+                    PotionEffectType.CONFUSION, 10, 10, true, false
                 )
             )
 
@@ -167,19 +170,20 @@ enum class Jutsu(
     KIRIN("Kirin", null, { user ->
         val world = user.world
         val targetLocation = user.getTargetEntity(16, false)?.location ?: user.getTargetBlock(
-            16,
-            TargetBlockInfo.FluidMode.NEVER
+            16, TargetBlockInfo.FluidMode.NEVER
         )?.location
-        
-        if (targetLocation != null) {
-            world.playSound(targetLocation, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.PLAYERS, 2.0f, 1.2f)
-            val entity = world.spawnEntity(targetLocation, EntityType.LIGHTNING) as LightningStrike
-            entity.isSilent = true
-            entity.flashCount = 4
 
-            world.playSound(
-                targetLocation, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 2.0f, 1.2f
-            )
+        if (targetLocation != null) {
+            val particleOptions = Particle.DustOptions(Color.AQUA, 5.0f)
+            world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
+            world.spawnParticle(Particle.REDSTONE, targetLocation, 10, particleOptions)
+            for (i in 0L..16L) {
+                getScheduler().scheduleSyncDelayedTask(Naruto.instance!!, {
+                    val entity = world.spawnEntity(targetLocation, EntityType.LIGHTNING) as LightningStrike
+                    entity.setCausingPlayer(user)
+                    entity.flashCount = 3
+                }, i + Math.random().toLong())
+            }
         }
     }, null)
 }
