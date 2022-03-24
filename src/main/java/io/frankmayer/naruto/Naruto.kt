@@ -39,6 +39,8 @@ class Naruto : JavaPlugin(), Listener {
         cmd.tabCompleter = cmdExec
 
         Bukkit.getPluginManager().registerEvents(this, this)
+
+        itemFactory!!.registerItems(NamespacedKey(this, "crafting"))
     }
 
     @EventHandler(priority = EventPriority.HIGH)

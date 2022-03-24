@@ -1,14 +1,17 @@
 package io.frankmayer.naruto
 
 import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit.getServer
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.persistence.PersistentDataType
 
-class ItemFactory() {
+class ItemFactory {
     private val rasenganTitle = Component.text(Jutsu.RASENGAN.displayName)
     private val rasenganLore = listOf(
         Component.text("Classification: Ninjutsu"),
@@ -82,7 +85,9 @@ class ItemFactory() {
     internal fun createShinraTensei(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
-        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.SHINRATENSEI.displayName)
+        meta.persistentDataContainer.set(
+            Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.SHINRATENSEI.displayName
+        )
         meta.displayName(shinraTenseiTitle)
         meta.lore(shinraTenseiLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
@@ -95,7 +100,9 @@ class ItemFactory() {
     internal fun createAmenotejikara(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
-        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.AMENOTEJIKARA.displayName)
+        meta.persistentDataContainer.set(
+            Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.AMENOTEJIKARA.displayName
+        )
         meta.displayName(amenotejikaraTitle)
         meta.lore(amenotejikaraLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
@@ -132,7 +139,9 @@ class ItemFactory() {
     internal fun createHiraishin(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
-        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.HIRAISHINNOJUTSU.displayName)
+        meta.persistentDataContainer.set(
+            Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.HIRAISHINNOJUTSU.displayName
+        )
         meta.displayName(HiraishinTitle)
         meta.lore(HiraishinLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
@@ -173,5 +182,11 @@ class ItemFactory() {
         }
 
         return item.itemMeta.persistentDataContainer.has(Naruto.hiraishinKey!!, PersistentDataType.STRING)
+    }
+
+    internal fun registerItems(key: NamespacedKey) {
+        getServer().addRecipe(
+            ShapelessRecipe(key, createHiraishinArrow()).addIngredient(Material.ARROW).addIngredient(Material.PAPER)
+        )
     }
 }
