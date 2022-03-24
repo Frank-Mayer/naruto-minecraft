@@ -173,7 +173,8 @@ enum class Jutsu(
     }),
     KIRIN("Kirin", null, { user, _ ->
         val world = user.world
-        val targetLocation = user.getTargetEntity(32, false)?.location ?: user.getTargetBlock(
+        val targetEntity = user.getTargetEntity(32, false)
+        val targetLocation = targetEntity?.location ?: user.getTargetBlock(
             32, TargetBlockInfo.FluidMode.NEVER
         )?.location
 
@@ -181,6 +182,16 @@ enum class Jutsu(
             val particleOptions = Particle.DustOptions(Color.AQUA, 5.0f)
             world.spawnParticle(Particle.REDSTONE, user.location, 10, particleOptions)
             world.spawnParticle(Particle.REDSTONE, targetLocation, 10, particleOptions)
+
+            if (targetEntity is LivingEntity && !targetEntity.isDead) {
+                targetEntity.addPotionEffect(
+                    PotionEffect(
+                        PotionEffectType.SLOW, 10, 10, false, false, false
+                    )
+                )
+                targetEntity.damage(10.0, user)
+            }
+
             for (i in 0L..16L) {
                 getScheduler().scheduleSyncDelayedTask(Naruto.instance!!, {
                     val entity = world.spawnEntity(targetLocation, EntityType.LIGHTNING) as LightningStrike
