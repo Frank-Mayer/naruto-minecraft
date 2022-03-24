@@ -48,8 +48,8 @@ class Naruto : JavaPlugin(), Listener {
             val weapon = attacker.inventory.itemInMainHand
             val target = event.entity as? LivingEntity ?: return
             val jutsu = itemFactory!!.getJutsu(weapon)
-            if (jutsu != null) {
-                jutsu.onHit?.invoke(attacker, target)
+            if (jutsu?.onHit != null) {
+                jutsu.onHit.invoke(attacker, target)
                 event.isCancelled = true
                 return
             }
@@ -67,8 +67,8 @@ class Naruto : JavaPlugin(), Listener {
         val item = player.inventory.itemInMainHand
         val jutsu = itemFactory!!.getJutsu(item)
 
-        if (jutsu != null) {
-            jutsu.onUse?.invoke(player, event.action)
+        if (jutsu?.onUse != null) {
+            jutsu.onUse.invoke(player, event.action)
             event.isCancelled = true
         }
     }
