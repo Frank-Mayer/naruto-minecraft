@@ -5,6 +5,7 @@ import org.bukkit.Bukkit.getScheduler
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.entity.*
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -21,6 +22,7 @@ enum class Jutsu(
 ) {
     RASENGAN("Rasengan", { attacker, target ->
         target.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 8, 10, true, false))
+        target.world.playSound(target.location, Sound.ENTITY_SHULKER_SHOOT, 1f, 1.5f)
         target.world.spawnParticle(Particle.EXPLOSION_LARGE, target.eyeLocation, 5)
         target.velocity = target.velocity.add(attacker.location.direction.multiply(5.0))
         if (Naruto.instance != null) {
