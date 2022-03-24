@@ -49,6 +49,8 @@ class Naruto : JavaPlugin(), Listener {
             val target = event.entity as? LivingEntity ?: return
             val jutsu = itemFactory!!.getJutsu(weapon)
             if (jutsu?.onHit != null) {
+                attacker.sendMessage("${jutsu.name} hit ${target.name}")
+                target.sendMessage("${jutsu.name} hit you")
                 jutsu.onHit.invoke(attacker, target)
                 event.isCancelled = true
                 return
@@ -57,8 +59,10 @@ class Naruto : JavaPlugin(), Listener {
 
         val defender = event.entity as? Player ?: return
         val defenderJutsu = itemFactory!!.getJutsu(defender.inventory.itemInMainHand) ?: return
-        defenderJutsu.onDefend?.invoke(defender, event)
-        event.isCancelled = true
+        if (defenderJutsu.onDefend != null) {
+            defenderJutsu.onDefend.invoke(defender, event)
+            event.isCancelled = true
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -68,6 +72,7 @@ class Naruto : JavaPlugin(), Listener {
         val jutsu = itemFactory!!.getJutsu(item)
 
         if (jutsu?.onUse != null) {
+            player.sendMessage("${jutsu.name} used")
             jutsu.onUse.invoke(player, event.action)
             event.isCancelled = true
         }
@@ -97,6 +102,7 @@ class Naruto : JavaPlugin(), Listener {
         val arrowEntity = event.projectile
 
         if (itemFactory!!.isHiraishin(arrowItem)) {
+            user.sendMessage("Hiraishin used")
             arrowEntity.setMetadata(hiraishinKey!!.toString(), FixedMetadataValue(this, user.uniqueId))
         }
     }
