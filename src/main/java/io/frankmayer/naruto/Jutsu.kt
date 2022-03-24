@@ -39,7 +39,7 @@ enum class Jutsu(
         val explosionRadius = (forceDistance / 4.0).toInt()
 
         attacker.world.spawnParticle(
-            Particle.REDSTONE, attacker.eyeLocation, 10, Particle.DustOptions(Color.PURPLE, 5.0f)
+            Particle.REDSTONE, attacker.location, 10, Particle.DustOptions(Color.PURPLE, 5.0f)
         )
 
         attacker.location.getNearbyEntities(forceDistance, forceDistance, forceDistance).forEach {
