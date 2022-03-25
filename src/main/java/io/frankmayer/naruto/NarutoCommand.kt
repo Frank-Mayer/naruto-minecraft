@@ -48,10 +48,6 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                                 inventory.addItem(itemFactory.createHiraishin())
                                 return true
                             }
-                            "oruka" -> {
-                                inventory.addItem(itemFactory.createOruka())
-                                return true
-                            }
                         }
                     }
                 }
@@ -99,7 +95,6 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                         "kirin",
                         "hiraishin_arrow",
                         "hiraishinnojutsu",
-                        "oruka"
                     )
                 }
             }

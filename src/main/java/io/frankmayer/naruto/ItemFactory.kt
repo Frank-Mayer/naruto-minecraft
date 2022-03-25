@@ -1,5 +1,6 @@
 package io.frankmayer.naruto
 
+import io.frankmayer.naruto.Jutsu.IJutsu
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit.getServer
 import org.bukkit.Material
@@ -12,7 +13,7 @@ import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.persistence.PersistentDataType
 
 class ItemFactory {
-    private val rasenganTitle = Component.text(Jutsu.RASENGAN.displayName)
+    private val rasenganTitle = Component.text(EJutsu.RASENGAN.jutsu.displayName)
     private val rasenganLore = listOf(
         Component.text("Classification: Ninjutsu"),
         Component.text("Rank: A-rank"),
@@ -20,7 +21,7 @@ class ItemFactory {
         Component.text("Range: Short range"),
         Component.text("Creator: Namikaze Minato")
     )
-    private val shinraTenseiTitle = Component.text(Jutsu.SHINRATENSEI.displayName)
+    private val shinraTenseiTitle = Component.text(EJutsu.SHINRATENSEI.jutsu.displayName)
     private val shinraTenseiLore = listOf(
         Component.text("Classification: Dōjutsu"),
         Component.text("Class: Offensive, Defensive"),
@@ -28,7 +29,7 @@ class ItemFactory {
         Component.text("Kekkei Genkai: Rin'negan")
     )
 
-    private val amenotejikaraTitle = Component.text(Jutsu.AMENOTEJIKARA.displayName)
+    private val amenotejikaraTitle = Component.text(EJutsu.AMENOTEJIKARA.jutsu.displayName)
     private val amenotejikaraLore = listOf(
         Component.text("Classification: Dōjutsu"),
         Component.text("Class: Supplementary"),
@@ -36,7 +37,7 @@ class ItemFactory {
         Component.text("Kekkei Genkai: Rin'negan")
     )
 
-    private val kirinTitle = Component.text(Jutsu.KIRIN.displayName)
+    private val kirinTitle = Component.text(EJutsu.KIRIN.jutsu.displayName)
     private val kirinLore = listOf(
         Component.text("Classification: Ninjutsu"),
         Component.text("Element: Raiton"),
@@ -46,7 +47,7 @@ class ItemFactory {
         Component.text("Creator: Uchiha Sasuke")
     )
 
-    private val HiraishinTitle = Component.text(Jutsu.HIRAISHINNOJUTSU.displayName)
+    private val HiraishinTitle = Component.text(EJutsu.HIRAISHINNOJUTSU.jutsu.displayName)
     private val HiraishinLore = listOf(
         Component.text("Classification: Space–Time Ninjutsu"),
         Component.text("Rank: S-rank"),
@@ -59,22 +60,13 @@ class ItemFactory {
     private val HiraishinArrowLore = listOf(
         Component.text("The signature tools of Namikaze Minato,"),
         Component.text("who uses them in conjunction with his"),
-        Component.text("Space–Time Ninjutsu: " + Jutsu.HIRAISHINNOJUTSU.displayName + ".")
-    )
-
-    private val OrukaTitle = Component.text(Jutsu.ORUKA.displayName)
-    private val OrukaLore = listOf(
-        Component.text("Classification: Ninjutsu"),
-        Component.text("Element: Suiton"),
-        Component.text("Class: Offensive"),
-        Component.text("Range: Short range"),
-        Component.text("Creator: Uzumaki Boruto")
+        Component.text("Space–Time Ninjutsu: " + EJutsu.HIRAISHINNOJUTSU.jutsu.displayName + ".")
     )
 
     internal fun createRasengan(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
-        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.RASENGAN.displayName)
+        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, EJutsu.RASENGAN.jutsu.displayName)
         meta.displayName(rasenganTitle)
         meta.lore(rasenganLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
@@ -95,7 +87,7 @@ class ItemFactory {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
         meta.persistentDataContainer.set(
-            Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.SHINRATENSEI.displayName
+            Naruto.ninjutsuKey!!, PersistentDataType.STRING, EJutsu.SHINRATENSEI.jutsu.displayName
         )
         meta.displayName(shinraTenseiTitle)
         meta.lore(shinraTenseiLore)
@@ -110,7 +102,7 @@ class ItemFactory {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
         meta.persistentDataContainer.set(
-            Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.AMENOTEJIKARA.displayName
+            Naruto.ninjutsuKey!!, PersistentDataType.STRING, EJutsu.AMENOTEJIKARA.jutsu.displayName
         )
         meta.displayName(amenotejikaraTitle)
         meta.lore(amenotejikaraLore)
@@ -124,7 +116,7 @@ class ItemFactory {
     internal fun createKirin(): ItemStack {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
-        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.KIRIN.displayName)
+        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, EJutsu.KIRIN.jutsu.displayName)
         meta.displayName(kirinTitle)
         meta.lore(kirinLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
@@ -149,23 +141,10 @@ class ItemFactory {
         val stack = ItemStack(Material.PLAYER_HEAD)
         val meta = stack.itemMeta
         meta.persistentDataContainer.set(
-            Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.HIRAISHINNOJUTSU.displayName
+            Naruto.ninjutsuKey!!, PersistentDataType.STRING, EJutsu.HIRAISHINNOJUTSU.jutsu.displayName
         )
         meta.displayName(HiraishinTitle)
         meta.lore(HiraishinLore)
-        meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
-        meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
-
-        stack.itemMeta = meta
-        return stack
-    }
-
-    internal fun createOruka(): ItemStack {
-        val stack = ItemStack(Material.PLAYER_HEAD)
-        val meta = stack.itemMeta
-        meta.persistentDataContainer.set(Naruto.ninjutsuKey!!, PersistentDataType.STRING, Jutsu.ORUKA.displayName)
-        meta.displayName(OrukaTitle)
-        meta.lore(OrukaLore)
         meta.addEnchant(org.bukkit.enchantments.Enchantment.VANISHING_CURSE, 1, true)
         meta.itemFlags.add(ItemFlag.HIDE_ATTRIBUTES)
 
@@ -181,17 +160,17 @@ class ItemFactory {
         return item.itemMeta.persistentDataContainer.has(Naruto.ninjutsuKey!!, PersistentDataType.STRING)
     }
 
-    internal fun getJutsu(item: ItemStack): Jutsu? {
+    internal fun getJutsu(item: ItemStack): IJutsu? {
         if (!item.hasItemMeta()) {
             return null
         }
 
-        for (jutsu in Jutsu.values()) {
+        for (jutsu in EJutsu.values()) {
             if (item.itemMeta.persistentDataContainer.get(
                     Naruto.ninjutsuKey!!, PersistentDataType.STRING
-                ) == jutsu.displayName
+                ) == jutsu.jutsu.displayName
             ) {
-                return jutsu
+                return jutsu.jutsu
             }
         }
 
