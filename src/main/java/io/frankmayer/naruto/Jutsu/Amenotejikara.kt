@@ -49,9 +49,11 @@ class Amenotejikara : IJutsu {
             val userVelocity = player.velocity.clone()
 
             target.teleport(userLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            target.fallDistance = 0.0f
             target.velocity = userVelocity
 
             player.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            player.fallDistance = 0.0f
             player.velocity = targetVelocity
         }
     }
@@ -90,9 +92,11 @@ class Amenotejikara : IJutsu {
             val userVelocity = defender.velocity.clone()
 
             target.teleport(userLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            target.fallDistance = 0.0f
             target.velocity = userVelocity
 
             defender.teleport(targetLocation, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            defender.fallDistance = 0.0f
             defender.velocity = targetVelocity
         }
     }
