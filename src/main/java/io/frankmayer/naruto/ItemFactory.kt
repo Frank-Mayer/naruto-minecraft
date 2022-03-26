@@ -66,8 +66,6 @@ class ItemFactory {
         return stack
     }
 
-    internal fun createJutsu(jutsu: EJutsu): ItemStack = createJutsu(jutsu.jutsu)
-
     internal fun isJutsu(item: ItemStack): Boolean {
         if (!item.hasItemMeta()) {
             return false
