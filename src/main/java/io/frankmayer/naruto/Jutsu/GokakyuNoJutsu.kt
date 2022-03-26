@@ -42,7 +42,7 @@ class GokakyuNoJutsu : IJutsu {
             scheduler.scheduleSyncDelayedTask(Naruto.instance!!, {
                 world.spawnParticle(
                     Particle.FLAME,
-                    player.eyeLocation,
+                    player.eyeLocation.clone().subtract(0.0,0.2,0.0),
                     0,
                     direction.x + (Math.random() - 0.5) / 4,
                     direction.y + (Math.random() - 0.5) / 4,
@@ -63,14 +63,6 @@ class GokakyuNoJutsu : IJutsu {
                         }
                     }
                 }
-            }
-
-            targetLocation.getNearbyEntities(
-                explosionRadius.toDouble(),
-                explosionRadius.toDouble(),
-                explosionRadius.toDouble()
-            ).forEach {
-                it.isVisualFire = true
             }
         }, 5)
     }
