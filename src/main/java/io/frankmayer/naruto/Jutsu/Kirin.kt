@@ -29,47 +29,52 @@ class Kirin : IJutsu {
     override val onHit: Nothing? = null
 
     val fireworkEffect =
-        FireworkEffect.builder().withColor(Color.AQUA).with(FireworkEffect.Type.CREEPER).withFade(Color.BLUE)
+        FireworkEffect.builder().withColor(Color.AQUA).with(FireworkEffect.Type.CREEPER).withFade(Color.WHITE)
             .flicker(true).trail(true)
     val particleOptions = Particle.DustOptions(Color.AQUA, 5.0f)
 
     override val onUse = { player: Player, _: Action ->
         val world = player.world
         val targetEntity = player.getTargetEntity(range.toInt(), false)
-        val targetLocation = targetEntity?.location ?: player.getTargetBlock(
+        val targetLocation = world.getHighestBlockAt(targetEntity?.location ?: player.getTargetBlock(
             32, TargetBlockInfo.FluidMode.NEVER
-        )?.location
+        )?.location ?: player.location).location
 
-        if (targetLocation != null) {
-            val fireworkEntity =
-                world.spawn(world.getHighestBlockAt(targetLocation).location.add(0.0, 1.0, 0.0), Firework::class.java)
-            val fireworkMeta = fireworkEntity.fireworkMeta
-            fireworkMeta.addEffect(fireworkEffect.build())
-            fireworkMeta.power = 1
-            fireworkEntity.fireworkMeta = fireworkMeta
+        val scheduler = Bukkit.getScheduler()
 
-            world.spawnParticle(Particle.REDSTONE, player.location, 10, particleOptions)
-            world.spawnParticle(Particle.REDSTONE, targetLocation, 10, particleOptions)
+        val fireworkEntity =
+            world.spawn(player.location.add(0.0, 1.0, 0.0), Firework::class.java)
+        val fireworkMeta = fireworkEntity.fireworkMeta
+        fireworkMeta.addEffect(fireworkEffect.build())
+        fireworkMeta.power = 1
+        fireworkEntity.fireworkMeta = fireworkMeta
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Naruto.instance!!, {
-                if (targetEntity is LivingEntity && !targetEntity.isDead) {
-                    targetEntity.addPotionEffect(
-                        PotionEffect(
-                            PotionEffectType.SLOW, 10, 10, false, false, false
-                        )
-                    )
-                    targetEntity.damage(10.0, player)
+        world.spawnParticle(Particle.REDSTONE, player.location, 10, particleOptions)
+        world.spawnParticle(Particle.REDSTONE, targetLocation, 10, particleOptions)
+
+        scheduler.scheduleSyncDelayedTask(Naruto.instance!!, {
+            targetLocation.getNearbyEntities(8.0, 8.0, 8.0).forEach {
+                if (it is LivingEntity && it != player) {
+                    it.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 20, 1, false, false))
+                    it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 20, 1, false, false))
+                    it.damage(10.0)
                 }
+            }
 
-                for (i in 0L..16L) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Naruto.instance!!, {
-                        val entity = world.spawnEntity(targetLocation, EntityType.LIGHTNING) as LightningStrike
-                        entity.setCausingPlayer(player)
-                        entity.flashCount = 3
-                    }, i + Math.random().toLong())
-                }
-            }, 8)
-        }
+            for (i in 0L..32L) {
+                scheduler.scheduleSyncDelayedTask(Naruto.instance!!, {
+                    val entity = world.spawnEntity(
+                        targetLocation.clone().add(
+                            Math.random() * 4,
+                            0.0,
+                            Math.random() * 4
+                        ), EntityType.LIGHTNING
+                    ) as LightningStrike
+                    entity.setCausingPlayer(player)
+                    entity.flashCount = 3
+                }, i + Math.random().toLong())
+            }
+        }, 30)
     }
 
     override val onDefend: Nothing? = null
