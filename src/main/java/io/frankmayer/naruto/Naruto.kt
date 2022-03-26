@@ -1,7 +1,9 @@
 package io.frankmayer.naruto
 
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.NamespacedKey
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -20,6 +22,7 @@ class Naruto : JavaPlugin(), Listener {
         var instance: Naruto? = null
         var ninjutsuKey: NamespacedKey? = null
         var hiraishinKey: NamespacedKey? = null
+        var returnInventoryKey: NamespacedKey? = null
         var itemFactory: ItemFactory? = null
     }
 
@@ -27,6 +30,7 @@ class Naruto : JavaPlugin(), Listener {
         instance = this
         ninjutsuKey = NamespacedKey(this, "jutsu")
         hiraishinKey = NamespacedKey(this, "hiraishin")
+        returnInventoryKey = NamespacedKey(this, "return_inventory")
         itemFactory = ItemFactory()
     }
 
@@ -105,6 +109,16 @@ class Naruto : JavaPlugin(), Listener {
         if (itemFactory!!.isHiraishin(arrowItem)) {
             user.sendMessage("Hiraishin used")
             arrowEntity.setMetadata(hiraishinKey!!.toString(), FixedMetadataValue(this, user.uniqueId))
+            arrowEntity.setMetadata(
+                returnInventoryKey!!.toString(), FixedMetadataValue(
+                    this,
+                    (if (event.shouldConsumeItem() && !arrowItem.containsEnchantment(Enchantment.ARROW_INFINITE) && user.gameMode != GameMode.CREATIVE) {
+                        "TRUE"
+                    } else {
+                        "FALSE"
+                    })
+                )
+            )
         }
     }
 }

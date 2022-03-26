@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerTeleportEvent
 class HiraishinNoJutsu : IJutsu {
     override val displayName = "Hiraishin no Jutsu"
     override val identifier = "hiraishin_no_jutsu"
-        override val description = listOf("Teleport to any previously marked location.")
+    override val description = listOf("Teleport to any previously marked location.")
     override val classification = JutsuClassification.SPACETIMENINJUTSU
     override val rank = JutsuRank.S
     override val creator = "Namikaze Minato"
@@ -76,7 +76,13 @@ class HiraishinNoJutsu : IJutsu {
                 } else {
                     player.velocity = velocity.multiply(3)
                 }
-                player.inventory.addItem(Naruto.itemFactory!!.createHiraishinArrow())
+
+                if (hiraishinArrow.getMetadata(Naruto.returnInventoryKey!!.toString()).map { meta ->
+                        meta.asString()
+                    }.contains("TRUE")) {
+                    player.inventory.addItem(Naruto.itemFactory!!.createHiraishinArrow())
+                }
+
                 hiraishinArrow.remove()
             }
         }
