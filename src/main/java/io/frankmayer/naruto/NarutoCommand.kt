@@ -8,6 +8,13 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.PlayerInventory
 
 class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, TabCompleter {
+    private val jutsuList = EJutsu.values().map { it.jutsu }
+    private val jutsuIdList = jutsuList.map { it.identifier }.toMutableList()
+    private val defaultIdemCounts = mutableListOf("1", "2", "4", "8", "16", "32", "64")
+
+    init {
+        jutsuIdList.add("hiraishin_arrow")
+    }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         sender.sendMessage(command.name + " " + args.joinToString(" "))
@@ -23,34 +30,17 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
             2 -> {
                 when (args[0]) {
                     "give" -> {
-                        when (args[1]) {
-                            "rasengan" -> {
-                                inventory.addItem(itemFactory.createJutsu(EJutsu.RASENGAN))
-                                return true
-                            }
-                            "shinratensei" -> {
-                                inventory.addItem(itemFactory.createJutsu(EJutsu.SHINRATENSEI))
-                                return true
-                            }
-                            "amenotejikara" -> {
-                                inventory.addItem(itemFactory.createJutsu(EJutsu.AMENOTEJIKARA))
-                                return true
-                            }
-                            "kirin" -> {
-                                inventory.addItem(itemFactory.createJutsu(EJutsu.KIRIN))
-                                return true
-                            }
-                            "hiraishin_arrow" -> {
-                                inventory.addItem(itemFactory.createHiraishinArrow())
-                                return true
-                            }
-                            "hiraishinnojutsu" -> {
-                                inventory.addItem(itemFactory.createJutsu(EJutsu.HIRAISHINNOJUTSU))
-                                return true
-                            }
-                            "gokakyunojutsu" -> {
-                                inventory.addItem(itemFactory.createJutsu(EJutsu.GOKAKYUNOJUTSU))
-                                return true
+                        val jutsu = jutsuList.firstOrNull { it.identifier.equals(args[1], true) }
+                        if (jutsu != null) {
+                            val item = itemFactory.createJutsu(jutsu)
+                            inventory.addItem(item)
+                            return true
+                        } else {
+                            when (args[1]) {
+                                "hiraishin_arrow" -> {
+                                    inventory.addItem(itemFactory.createHiraishinArrow())
+                                    return true
+                                }
                             }
                         }
                     }
@@ -92,15 +82,7 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
             1 -> return mutableListOf("give")
             2 -> when (args[0]) {
                 "give" -> {
-                    return mutableListOf(
-                        "rasengan",
-                        "shinratensei",
-                        "amenotejikara",
-                        "kirin",
-                        "hiraishin_arrow",
-                        "hiraishinnojutsu",
-                        "gokakyunojutsu"
-                    )
+                    return jutsuIdList
                 }
             }
             3 -> {
@@ -108,7 +90,7 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                     "give" -> {
                         when (args[1]) {
                             "hiraishin_arrow" -> {
-                                return mutableListOf("1", "5", "10", "16")
+                                return defaultIdemCounts
                             }
                         }
                     }

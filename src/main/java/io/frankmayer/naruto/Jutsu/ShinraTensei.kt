@@ -1,5 +1,9 @@
 package io.frankmayer.naruto.Jutsu
 
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuClassification
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuElement
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuRank
+import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -11,6 +15,7 @@ import org.bukkit.event.block.Action
 
 class ShinraTensei : IJutsu {
     override val displayName = "Shinra Tensei"
+    override val identifier = "Shinra_tensei"
     override val description = listOf("Push away everything in the vicinity.")
     override val classification = JutsuClassification.DOJUTSU
     override val rank = JutsuRank.NONE

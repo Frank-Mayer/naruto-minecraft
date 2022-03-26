@@ -1,6 +1,10 @@
 package io.frankmayer.naruto.Jutsu
 
 import com.destroystokyo.paper.block.TargetBlockInfo
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuClassification
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuElement
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuRank
+import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import io.frankmayer.naruto.Naruto
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -13,6 +17,7 @@ import org.bukkit.potion.PotionEffectType
 
 class Kirin : IJutsu {
     override val displayName = "Kirin"
+    override val identifier = "kirin"
     override val description = listOf("Summon a lightning dragon that", "strikes the target and its surrounding.")
     override val classification = JutsuClassification.NINJUTSU
     override val rank = JutsuRank.S

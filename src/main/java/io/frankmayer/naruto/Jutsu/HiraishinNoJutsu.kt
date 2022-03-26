@@ -1,5 +1,9 @@
 package io.frankmayer.naruto.Jutsu
 
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuClassification
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuElement
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuRank
+import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import io.frankmayer.naruto.Naruto
 import org.bukkit.Color
 import org.bukkit.Particle
@@ -11,7 +15,8 @@ import org.bukkit.event.player.PlayerTeleportEvent
 
 class HiraishinNoJutsu : IJutsu {
     override val displayName = "Hiraishin no Jutsu"
-    override val description = listOf("Teleport to any previously marked location.")
+    override val identifier = "hiraishin_no_jutsu"
+        override val description = listOf("Teleport to any previously marked location.")
     override val classification = JutsuClassification.SPACETIMENINJUTSU
     override val rank = JutsuRank.S
     override val creator = "Namikaze Minato"
@@ -64,7 +69,8 @@ class HiraishinNoJutsu : IJutsu {
                 val particleOptions = Particle.DustOptions(Color.YELLOW, 5.0f)
                 world.spawnParticle(Particle.REDSTONE, player.location, 10, particleOptions)
                 world.spawnParticle(Particle.REDSTONE, hiraishinArrow.location, 10, particleOptions)
-                player.teleport(hiraishinArrow, PlayerTeleportEvent.TeleportCause.PLUGIN)
+                player.teleport(hiraishinArrow.location, PlayerTeleportEvent.TeleportCause.PLUGIN)
+                player.fallDistance = 0.0f
                 if (hiraishinArrow.isOnGround || hiraishinArrow.isInBlock) {
                     player.velocity = velocity
                 } else {

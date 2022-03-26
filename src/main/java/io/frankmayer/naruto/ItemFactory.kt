@@ -1,8 +1,8 @@
 package io.frankmayer.naruto
 
 import io.frankmayer.naruto.Jutsu.IJutsu
-import io.frankmayer.naruto.Jutsu.JutsuElement
-import io.frankmayer.naruto.Jutsu.KekkeiGenkai
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuElement
+import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit.getServer
 import org.bukkit.Material

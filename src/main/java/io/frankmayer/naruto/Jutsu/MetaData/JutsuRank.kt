@@ -1,4 +1,4 @@
-package io.frankmayer.naruto.Jutsu
+package io.frankmayer.naruto.Jutsu.MetaData
 
 enum class JutsuRank {
     NONE,

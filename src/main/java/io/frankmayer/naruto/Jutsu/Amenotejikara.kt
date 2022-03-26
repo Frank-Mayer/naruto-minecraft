@@ -1,5 +1,8 @@
 package io.frankmayer.naruto.Jutsu
 
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuClassification
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuElement
+import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import org.bukkit.Color
 import org.bukkit.Particle
 import org.bukkit.entity.Entity
@@ -14,6 +17,7 @@ import kotlin.math.floor
 
 class Amenotejikara : IJutsu {
     override val displayName = "Amenotejikara"
+    override val identifier = "amenotejikara"
     override val description = listOf("Switch places with any entity in range.")
     override val classification = JutsuClassification.DOJUTSU
     override val rank: Nothing? = null

@@ -1,4 +1,4 @@
-package io.frankmayer.naruto.Jutsu
+package io.frankmayer.naruto.Jutsu.MetaData
 
 enum class JutsuClassification(val displayName: String) {
     NINJUTSU("Ninjutsu"),

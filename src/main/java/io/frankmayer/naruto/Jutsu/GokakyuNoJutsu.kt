@@ -1,10 +1,15 @@
 package io.frankmayer.naruto.Jutsu
 
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuClassification
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuElement
+import io.frankmayer.naruto.Jutsu.MetaData.JutsuRank
+import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
 
 class GokakyuNoJutsu : IJutsu {
     override val displayName = "Gōkakyū no Jutsu"
+    override val identifier = "gokakyu_no_jutsu"
     override val description = listOf("Great Fireball.")
     override val classification = JutsuClassification.NINJUTSU
     override val rank = JutsuRank.C
