@@ -7,11 +7,14 @@ import io.frankmayer.naruto.Jutsu.MetaData.KekkeiGenkai
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.entity.FallingBlock
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
 import org.bukkit.event.block.Action
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 
 class ShinraTensei : IJutsu {
     override val displayName = "Shinra Tensei"
@@ -47,18 +50,38 @@ class ShinraTensei : IJutsu {
             }
 
             if (it is LivingEntity) {
-                it.damage(4.0, player)
+                it.damage(8.0, player)
             }
         }
 
+        player.world.playSound(player.location, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1.0f, 1.5f)
+
+        val min = 4 - explosionRadius
+        val max = explosionRadius - 4
+
         for (x in -explosionRadius..explosionRadius) {
-            for (y in 0..explosionRadius) {
+            for (y in -explosionRadius..explosionRadius) {
+                if ((x < min || x > max) && (y < min || y > max)) {
+                    continue
+                }
+
                 for (z in -explosionRadius..explosionRadius) {
+                    if (((x < min || x > max) && (z < min || z > max)) || ((y < min || y > max) && (z < min || z > max))) {
+                        continue
+                    }
+
                     val blockLocation = player.location.add(x.toDouble(), y.toDouble(), z.toDouble())
                     val block = blockLocation.block
                     if (block.type.isSolid) {
-                        block.breakNaturally()
-                        blockLocation.world.spawnParticle(Particle.EXPLOSION_NORMAL, blockLocation, 1)
+                        if (x+y+z % 4 == 0) {
+                            block.breakNaturally()
+                        } else {
+                            block.type = Material.AIR
+                        }
+
+                        if (x+y+z % 5 == 0) {
+                            blockLocation.world.spawnParticle(Particle.EXPLOSION_NORMAL, blockLocation, 1)
+                        }
                     } else if (block.isLiquid) {
                         block.type = Material.AIR
                     }
@@ -66,24 +89,7 @@ class ShinraTensei : IJutsu {
             }
         }
 
-        for (x in -explosionRadius..explosionRadius) {
-            for (z in -explosionRadius..explosionRadius) {
-                val blockLocation = player.location.add(x.toDouble(), -1.0, z.toDouble())
-                val block = blockLocation.block
-                when (block.type) {
-                    Material.GRASS_BLOCK, Material.DIRT -> {
-                        block.type = Material.COARSE_DIRT
-                    }
-                    Material.STONE -> {
-                        block.type = Material.GRAVEL
-                    }
-                    Material.SANDSTONE, Material.CHISELED_RED_SANDSTONE, Material.CHISELED_SANDSTONE, Material.SMOOTH_RED_SANDSTONE, Material.SMOOTH_SANDSTONE -> {
-                        block.type = Material.SAND
-                    }
-                    else -> {}
-                }
-            }
-        }
+        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW_FALLING, 80, 1, false, false, false))
     }
 
     override val onDefend: Nothing? = null
