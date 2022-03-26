@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 class SuirouNoJutsu : IJutsu {
-    override val displayName = "Suirou no Jutsu"
+    override val displayName = "Suirō no Jutsu"
     override val identifier = "suirou_no_jutsu"
     override val description = listOf(
         "This technique traps a target in a sphere of water.",
