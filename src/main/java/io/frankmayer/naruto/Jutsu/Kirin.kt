@@ -36,14 +36,15 @@ class Kirin : IJutsu {
     override val onUse = { player: Player, _: Action ->
         val world = player.world
         val targetEntity = player.getTargetEntity(range.toInt(), false)
-        val targetLocation = world.getHighestBlockAt(targetEntity?.location ?: player.getTargetBlock(
-            32, TargetBlockInfo.FluidMode.NEVER
-        )?.location ?: player.location).location
+        val targetLocation = world.getHighestBlockAt(
+            targetEntity?.location ?: player.getTargetBlock(
+                32, TargetBlockInfo.FluidMode.NEVER
+            )?.location ?: player.location
+        ).location
 
         val scheduler = Bukkit.getScheduler()
 
-        val fireworkEntity =
-            world.spawn(player.location.add(0.0, 1.0, 0.0), Firework::class.java)
+        val fireworkEntity = world.spawn(player.location.add(0.0, 1.0, 0.0), Firework::class.java)
         val fireworkMeta = fireworkEntity.fireworkMeta
         fireworkMeta.addEffect(fireworkEffect.build())
         fireworkMeta.power = 1
@@ -65,9 +66,7 @@ class Kirin : IJutsu {
                 scheduler.scheduleSyncDelayedTask(Naruto.instance!!, {
                     val entity = world.spawnEntity(
                         targetLocation.clone().add(
-                            Math.random() * 4,
-                            0.0,
-                            Math.random() * 4
+                            (Math.random() - 0.5) * 4, 0.0, (Math.random() - 0.5) * 4
                         ), EntityType.LIGHTNING
                     ) as LightningStrike
                     entity.setCausingPlayer(player)
