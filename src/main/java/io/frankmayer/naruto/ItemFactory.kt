@@ -42,6 +42,7 @@ class ItemFactory {
 
         val lore = mutableListOf<String>()
         lore.addAll(jutsu.description)
+        lore.add("")
         lore.add("Classification: " + jutsu.classification.displayName)
         if (jutsu.rank != null) {
             lore.add("Rank: " + jutsu.rank)
