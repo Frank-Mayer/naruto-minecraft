@@ -14,18 +14,22 @@ import kotlin.math.floor
 
 class Amenotejikara : IJutsu {
     override val displayName = "Amenotejikara"
+    override val description = listOf("Switch places with any entity in range.")
+    override val classification = JutsuClassification.DOJUTSU
+    override val rank: Nothing? = null
+    override val creator = "Uchiha Sasuke"
+    override val range = 10.0
+    override val kekkeiGenkai = KekkeiGenkai.RINNEGAN
+    override val element = JutsuElement.NONE
 
     override val onHit: Nothing? = null
 
     override val onUse = { player: Player, _: Action ->
-        val range = Math.random() * 16.0 + 16.0
-
-        val possibleTargets: List<Entity> = player.world.getNearbyEntities(player.location, range, range, range)
+        val target = player.getTargetEntity(range.toInt(), false) ?: player.world.getNearbyEntities(player.location, range, range, range)
             .filter { it.uniqueId != player.uniqueId }.sortedByDescending { it.location.distance(player.location) }
+            .randomOrNull()
 
-        if (possibleTargets.isNotEmpty()) {
-            val target = possibleTargets[floor(Math.random() * possibleTargets.size).toInt()]
-
+        if (target != null) {
             val particleOptions = Particle.DustOptions(Color.PURPLE, 5.0f)
             player.world.spawnParticle(Particle.REDSTONE, player.location, 10, particleOptions)
             player.world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)

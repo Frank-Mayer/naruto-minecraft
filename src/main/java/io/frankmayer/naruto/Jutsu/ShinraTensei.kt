@@ -11,13 +11,20 @@ import org.bukkit.event.block.Action
 
 class ShinraTensei : IJutsu {
     override val displayName = "Shinra Tensei"
+    override val description = listOf("Push away everything in the vicinity.")
+    override val classification = JutsuClassification.DOJUTSU
+    override val rank = JutsuRank.NONE
+    override val creator: Nothing? = null
+    override val range = 32.0
+    override val kekkeiGenkai = KekkeiGenkai.NONE
+    override val element = JutsuElement.NONE
 
     override val onHit: Nothing? = null
 
     override val onUse = { player: Player, _: Action ->
         val attackerLocationVector = player.location.toVector()
-        val forceDistance = 32.0
-        val explosionRadius = (forceDistance / 4.0).toInt()
+        val forceDistance = range
+        val explosionRadius = (forceDistance / 2.0).toInt()
 
         player.world.spawnParticle(
             Particle.REDSTONE, player.location, 10, Particle.DustOptions(Color.PURPLE, 5.0f)

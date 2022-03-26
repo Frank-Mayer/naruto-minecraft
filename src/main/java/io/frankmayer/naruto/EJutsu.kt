@@ -7,5 +7,6 @@ enum class EJutsu (val jutsu: IJutsu) {
     SHINRATENSEI(ShinraTensei()),
     AMENOTEJIKARA(Amenotejikara()),
     KIRIN(Kirin()),
-    HIRAISHINNOJUTSU(HiraishinNoJutsu())
+    HIRAISHINNOJUTSU(HiraishinNoJutsu()),
+    GOKAKYUNOJUTSU(GokakyuNoJutsu())
 }

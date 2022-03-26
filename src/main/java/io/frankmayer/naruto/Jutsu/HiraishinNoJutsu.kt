@@ -11,6 +11,13 @@ import org.bukkit.event.player.PlayerTeleportEvent
 
 class HiraishinNoJutsu : IJutsu {
     override val displayName = "Hiraishin no Jutsu"
+    override val description = listOf("Teleport to any previously marked location.")
+    override val classification = JutsuClassification.SPACETIMENINJUTSU
+    override val rank = JutsuRank.S
+    override val creator = "Namikaze Minato"
+    override val range = 8.0
+    override val kekkeiGenkai = KekkeiGenkai.NONE
+    override val element = JutsuElement.RAITON
 
     override val onHit = { attacker: Player, target: LivingEntity ->
         val hiraishinKeyString = Naruto.hiraishinKey!!.toString()

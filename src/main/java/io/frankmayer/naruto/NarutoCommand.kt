@@ -25,19 +25,19 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                     "give" -> {
                         when (args[1]) {
                             "rasengan" -> {
-                                inventory.addItem(itemFactory.createRasengan())
+                                inventory.addItem(itemFactory.createJutsu(EJutsu.RASENGAN))
                                 return true
                             }
                             "shinratensei" -> {
-                                inventory.addItem(itemFactory.createShinraTensei())
+                                inventory.addItem(itemFactory.createJutsu(EJutsu.SHINRATENSEI))
                                 return true
                             }
                             "amenotejikara" -> {
-                                inventory.addItem(itemFactory.createAmenotejikara())
+                                inventory.addItem(itemFactory.createJutsu(EJutsu.AMENOTEJIKARA))
                                 return true
                             }
                             "kirin" -> {
-                                inventory.addItem(itemFactory.createKirin())
+                                inventory.addItem(itemFactory.createJutsu(EJutsu.KIRIN))
                                 return true
                             }
                             "hiraishin_arrow" -> {
@@ -45,7 +45,11 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                                 return true
                             }
                             "hiraishinnojutsu" -> {
-                                inventory.addItem(itemFactory.createHiraishin())
+                                inventory.addItem(itemFactory.createJutsu(EJutsu.HIRAISHINNOJUTSU))
+                                return true
+                            }
+                            "gokakyunojutsu" -> {
+                                inventory.addItem(itemFactory.createJutsu(EJutsu.GOKAKYUNOJUTSU))
                                 return true
                             }
                         }
@@ -95,6 +99,7 @@ class NarutoCommand(private val itemFactory: ItemFactory) : CommandExecutor, Tab
                         "kirin",
                         "hiraishin_arrow",
                         "hiraishinnojutsu",
+                        "gokakyunojutsu"
                     )
                 }
             }
