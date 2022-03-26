@@ -13,9 +13,9 @@ interface IJutsu {
     val displayName: String
     val identifier: String
     val description: List<String>
-    val onHit: ((attacker: Player, target: LivingEntity) -> Unit)?
-    val onUse: ((player: Player, action: Action) -> Unit)?
-    val onDefend: ((defender: Player, event: EntityDamageByEntityEvent) -> Unit)?
+    val onHit: ((attacker: Player, target: LivingEntity) -> Any)?
+    val onUse: ((player: Player, action: Action) -> Any)?
+    val onDefend: ((defender: Player, event: EntityDamageByEntityEvent) -> Any)?
 
     val classification: JutsuClassification
     val rank: JutsuRank?
