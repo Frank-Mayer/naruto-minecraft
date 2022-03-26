@@ -42,6 +42,7 @@ class HiraishinNoJutsu : IJutsu {
             world.spawnParticle(Particle.REDSTONE, target.location, 10, particleOptions)
             world.spawnParticle(Particle.REDSTONE, hiraishinArrow.location, 10, particleOptions)
             target.teleport(hiraishinArrow, PlayerTeleportEvent.TeleportCause.PLUGIN)
+            target.fallDistance = 0.0f
             if (hiraishinArrow.isOnGround || hiraishinArrow.isInBlock) {
                 target.velocity = velocity
             } else {
