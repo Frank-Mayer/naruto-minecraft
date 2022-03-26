@@ -15,7 +15,7 @@ import org.bukkit.event.block.Action
 
 class ShinraTensei : IJutsu {
     override val displayName = "Shinra Tensei"
-    override val identifier = "Shinra_tensei"
+    override val identifier = "shinra_tensei"
     override val description = listOf("Push away everything in the vicinity.")
     override val classification = JutsuClassification.DOJUTSU
     override val rank = JutsuRank.NONE
