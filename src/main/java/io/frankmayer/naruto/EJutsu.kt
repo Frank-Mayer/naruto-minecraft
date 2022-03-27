@@ -10,4 +10,5 @@ enum class EJutsu (val jutsu: IJutsu) {
     HIRAISHINNOJUTSU(HiraishinNoJutsu()),
     GOKAKYUNOJUTSU(GokakyuNoJutsu()),
     SUIROUNOJUTSU(SuirouNoJutsu()),
+    SUIJINHEKI(Suijinheki())
 }
