@@ -45,6 +45,7 @@ Keep in mind, that your server might remove items like Arrows.
 
 ### Suiton
 
+- [Suijinheki](https://naruto.fandom.com/wiki/Water_Release:_Water_Formation_Wall)
 - [Suirō no Jutsu](https://naruto.fandom.com/wiki/Water_Prison_Technique)
 
 ### Other
